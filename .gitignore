@@ -1,0 +1,36 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+.next/
+out/
+
+# Next.js
+*.log
+*.tsbuildinfo
+.next
+out
+build
+dist
+.cache
+coverage
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vscode/
+.vs/
+*.csproj.user
+*.csproj.nuget.g.props
+*.csproj.nuget.g.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
