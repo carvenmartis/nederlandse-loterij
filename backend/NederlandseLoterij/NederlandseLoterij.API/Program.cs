@@ -1,3 +1,5 @@
+using NederlandseLoterij.API.Middelwares;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,6 +10,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>(); // Ensure ExceptionMiddleware is defined in the specified namespace
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
