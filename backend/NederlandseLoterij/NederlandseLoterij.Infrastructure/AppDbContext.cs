@@ -7,9 +7,13 @@ namespace NederlandseLoterij.Infrastructure;
 /// Represents the application database context for the Nederlandse Loterij.
 /// This context manages the entity framework operations for the GridState entity.
 /// </summary>
-internal class AppDbContext : DbContext
+public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+    }
+
+    public AppDbContext()
     {
     }
 

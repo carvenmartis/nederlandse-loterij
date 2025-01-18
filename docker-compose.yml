@@ -6,13 +6,28 @@ services:
       context: ./backend/NederlandseLoterij
       dockerfile: NederlandseLoterij.API/Dockerfile
     ports:
-      - "5000:80"
-      - "5001:443"
+      - "5000:80" # Maps container port 80 to host port 5000
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ScratchGame;User Id=sa;Password=YourStrongPassword;
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ScratchGame;User Id=sa;Password=Str0ng@P@ssw0rd;Encrypt=false;TrustServerCertificate=true;
     depends_on:
       - sqlserver
+      - migrations
+    networks:
+      - app_network
+
+  migrations:
+    build:
+      context: ./backend/NederlandseLoterij
+      dockerfile: NederlandseLoterij.API/Dockerfile
+    command: ["dotnet", "ef", "database", "update"]
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ScratchGame;User Id=sa;Password=Str0ng@P@ssw0rd;Encrypt=false;TrustServerCertificate=true;
+    depends_on:
+      - sqlserver
+    networks:
+      - app_network
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -39,3 +54,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    networks:
+      - app_network
+
+networks:
+  app_network:

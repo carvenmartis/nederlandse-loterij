@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using NederlandseLoterij.Application.SratchSquares.Commands;
 
 namespace NederlandseLoterij.Application;
 
@@ -14,6 +15,8 @@ public static class ServiceCollectionExtensions
     /// <returns>The updated service collection.</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ScratchSquareCommandHandler).Assembly));
+
         return services;
     }
 }

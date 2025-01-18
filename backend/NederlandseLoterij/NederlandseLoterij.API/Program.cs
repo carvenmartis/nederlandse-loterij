@@ -17,6 +17,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddInfrastructure(connectionString);
 builder.Services.AddHealthChecks();
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(80);  // HTTP
+});
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
