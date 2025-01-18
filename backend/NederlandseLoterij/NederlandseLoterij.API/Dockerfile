@@ -1,30 +1,41 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-
-# This stage is used to build the service project
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["NederlandseLoterij.API/NederlandseLoterij.API.csproj", "NederlandseLoterij.API/"]
-RUN dotnet restore "./NederlandseLoterij.API/NederlandseLoterij.API.csproj"
-COPY . .
-WORKDIR "/src/NederlandseLoterij.API"
-RUN dotnet build "./NederlandseLoterij.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
-# This stage is used to publish the service project to be copied to the final stage
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./NederlandseLoterij.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
-FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Copy project files
+COPY ./NederlandseLoterij.Application/*.csproj ./NederlandseLoterij.Application/
+COPY ./NederlandseLoterij.Infrastructure/*.csproj ./NederlandseLoterij.Infrastructure/
+COPY ./NederlandseLoterij.Domain/*.csproj ./NederlandseLoterij.Domain/
+COPY ./NederlandseLoterij.API/*.csproj ./NederlandseLoterij.API/
+
+# Restore dependencies
+WORKDIR /app/NederlandseLoterij.API
+RUN dotnet restore
+
+# Copy the entire source code
+WORKDIR /app
+COPY ./NederlandseLoterij.Application ./NederlandseLoterij.Application/
+COPY ./NederlandseLoterij.Infrastructure ./NederlandseLoterij.Infrastructure/
+COPY ./NederlandseLoterij.Domain ./NederlandseLoterij.Domain/
+COPY ./NederlandseLoterij.API ./NederlandseLoterij.API/
+
+# Build and publish the API
+WORKDIR /app/NederlandseLoterij.API
+RUN dotnet build -c Release
+RUN dotnet publish -c Release -o /publish
+
+# Stage 2: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+
+# Copy published files
+COPY --from=build /publish .
+
+ENV ASPNETCORE_URLS=http://+:80
+
+# Expose ports
+EXPOSE 80
+EXPOSE 443
+
+# Set the entry point
 ENTRYPOINT ["dotnet", "NederlandseLoterij.API.dll"]

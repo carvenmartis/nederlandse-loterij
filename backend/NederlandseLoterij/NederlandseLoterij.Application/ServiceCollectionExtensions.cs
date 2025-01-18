@@ -5,7 +5,7 @@ namespace NederlandseLoterij.Application;
 /// <summary>
 /// Provides extension methods for configuring application services.
 /// </summary>
-public static class DependencyInjection
+public static class ServiceCollectionExtensions
 {
     /// <summary>
     /// Adds application services to the specified IServiceCollection.
