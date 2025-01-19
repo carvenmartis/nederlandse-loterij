@@ -17,6 +17,8 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<IScratchService, ScratchService>();
+        services.AddHostedService<BackgroundSquareScratcher>();
+
         return services;
     }
 }

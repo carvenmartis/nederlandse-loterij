@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using NederlandseLoterij.API.Hubs;
+using NederlandseLoterij.Application.Hubs;
 using NederlandseLoterij.Application.Interfaces;
 using NederlandseLoterij.Application.Models;
 

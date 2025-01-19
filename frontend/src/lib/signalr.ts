@@ -4,23 +4,31 @@ import {
   HubConnection,
 } from "@microsoft/signalr";
 
-const SIGNALR_HUB_URL = process.env.NEXT_PUBLIC_API_BASE_URL + "/scratchHub";
+const SIGNALR_HUB_URL = process.env.NEXT_PUBLIC_API_BASE_URL + "/hub/scratch";
 
 let connection: HubConnection | null = null;
 
 export const startSignalRConnection = (
-  onScratchUpdate: (id: number, prize: string) => void
+  onScratchUpdate: (squareId: number, prize: string | null) => void
 ) => {
   connection = new HubConnectionBuilder()
-    .withUrl(SIGNALR_HUB_URL!) // Ensure this matches the backend hub URL
-    .configureLogging(LogLevel.Information)
+    .withUrl(SIGNALR_HUB_URL) // Ensure this matches the backend endpoint
+    .configureLogging(LogLevel.Information) // Enables detailed logging
     .withAutomaticReconnect()
     .build();
 
-  connection.on("ReceiveScratchUpdate", (id: number, prize: string) => {
-    onScratchUpdate(id, prize);
-  });
+  // Listen for the "ReceiveScratchUpdate" event
+  connection.on(
+    "ReceiveScratchUpdate",
+    (squareId: number, prize: string | null) => {
+      console.log(
+        `SignalR Event Received: Square ID = ${squareId}, Prize = ${prize}`
+      );
+      onScratchUpdate(squareId, prize); // Call the callback with the received data
+    }
+  );
 
+  // Start the connection
   connection
     .start()
     .then(() => console.log("SignalR Connected"))

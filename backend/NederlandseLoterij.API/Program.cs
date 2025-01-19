@@ -1,6 +1,6 @@
-using NederlandseLoterij.API.Hubs;
 using NederlandseLoterij.API.Middlewares;
 using NederlandseLoterij.Application;
+using NederlandseLoterij.Application.Hubs;
 using NederlandseLoterij.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +19,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:3000") 
+        policy.WithOrigins("http://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -56,7 +56,7 @@ app.UseHttpsRedirection();
 app.UseHealthChecks("/api/health");
 app.UseRouting();
 app.MapControllers();
-app.MapHub<ScratchHub>("/api/scratchHub");
+app.MapHub<ScratchHub>("/hub/scratch");
 app.UseCors();
 
 app.Run();

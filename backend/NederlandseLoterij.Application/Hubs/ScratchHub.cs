@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace NederlandseLoterij.API.Hubs;
+namespace NederlandseLoterij.Application.Hubs;
 
 /// <summary>
 /// Hub for handling scratch card related real-time communication.
