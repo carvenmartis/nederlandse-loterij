@@ -6,12 +6,17 @@ namespace NederlandseLoterij.Infrastructure;
 /// <summary>
 /// Represents the application's database context.
 /// </summary>
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options), IAppDbContext
 {
     /// <summary>
     /// Gets or sets the DbSet for ScratchableArea entities.
     /// </summary>
     public DbSet<ScratchableArea> ScratchableAreas { get; set; }
+
+    /// <summary>
+    /// Gets or sets the DbSet for User entities.
+    /// </summary>
+    public DbSet<User> Users { get; set; }
 
     /// <summary>
     /// Configures the model and seeds initial data.
@@ -24,14 +29,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         // Seed 10,000 scratchable areas
         var areas = new List<ScratchableArea>
         {
-            new() { Id = 1, IsScratched = false, Prize = "€25,000" }
+            new() { Id = 1, Prize = "€25,000" }
         };
 
         areas.AddRange(
             Enumerable.Range(2, 100).Select(id => new ScratchableArea
             {
                 Id = id,
-                IsScratched = false,
                 Prize = "Consolation Prize"
             })
         );

@@ -29,6 +29,7 @@ public class ExceptionMiddleware(RequestDelegate next, ProblemDetailsFactory pro
             KeyNotFoundException => HttpStatusCode.NotFound,
             UnauthorizedAccessException => HttpStatusCode.Unauthorized,
             AlreadyScratchedException => HttpStatusCode.BadRequest,
+            ValidationException => HttpStatusCode.BadRequest,
             _ => HttpStatusCode.InternalServerError
         };
 

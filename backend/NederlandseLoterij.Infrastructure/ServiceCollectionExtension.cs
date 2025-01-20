@@ -14,10 +14,11 @@ public static class ServiceCollectionExtension
     /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        services.AddDbContext<AppDbContext>(options =>
+        services.AddDbContext<IAppDbContext, AppDbContext>(options =>
             options.UseInMemoryDatabase("ScratchGameDB"));
 
-        services.AddScoped<IScratchRepository, ScratchRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IScratchableAreaRepository, ScratchableAreaRepository>();
 
         return services;
     }

@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using NederlandseLoterij.Application.Interfaces;
+﻿using FluentValidation;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using NederlandseLoterij.Application.Behaviors;
+using NederlandseLoterij.Application.Scratchable.Commands;
 using NederlandseLoterij.Application.Services;
 
 namespace NederlandseLoterij.Application;
@@ -16,8 +19,12 @@ public static class ServiceCollectionExtension
     /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddScoped<IScratchService, ScratchService>();
-        services.AddHostedService<BackgroundSquareScratcher>();
+        services.AddHostedService<SquareScratcherService>();
+
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtension).Assembly));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+        services.AddValidatorsFromAssemblyContaining<ScratchRecordCommandValidator>();
 
         return services;
     }

@@ -12,7 +12,6 @@ const Calendar: React.FC<CalendarProps> = ({ areas, onScratch }) => {
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Navigation Bar */}
       <NavBar />
-
       {/* Calendar Content */}
       <div className="flex justify-center items-center p-4 flex-grow">
         <div className="grid grid-cols-50 gap-1 w-full">

@@ -18,5 +18,15 @@ public class ScratchableArea
     /// <summary>
     /// Gets or sets the prize associated with the scratchable area.
     /// </summary>
-    public string? Prize { get; set; }
+    public string Prize { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the unique identifier of the user associated with the scratchable area.
+    /// </summary>
+    public Guid? UserId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the user associated with the scratchable area.
+    /// </summary>
+    public User? User { get; set; }
 }

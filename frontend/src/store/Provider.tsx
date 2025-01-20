@@ -11,7 +11,7 @@ export default function ReduxProvider({
 }) {
   return (
     <Provider store={store}>
-      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+      <PersistGate loading={<p>Loading...</p>} persistor={persistor}>
         {children}
       </PersistGate>
     </Provider>

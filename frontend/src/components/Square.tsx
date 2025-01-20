@@ -29,7 +29,7 @@ const Square: React.FC<SquareProps> = ({
     >
       {/* Overlay */}
       {isScratched && prize && (
-        <div className="absolute inset-0 z-40 flex items-center justify-center bg-opacity-75 text-white  rounded opacity-0 hover:opacity-100 transition-opacity">
+        <div className="absolute inset-0 z-40 flex items-center justify-center bg-opacity-75 text-white rounded opacity-0 hover:opacity-100 transition-opacity">
           <p className="text-[.5rem] text-center whitespace-nowrap bg-black px-2 py-1 opacity-50">
             {prize}
           </p>

@@ -1,27 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using NederlandseLoterij.Application.Hubs;
-using NederlandseLoterij.Application.Interfaces;
-using NederlandseLoterij.Application.Models;
+using NederlandseLoterij.Application.Scratchable.Commands;
+using NederlandseLoterij.Application.Scratchable.Queries;
 
 namespace NederlandseLoterij.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ScratchController(IScratchService scratchService, IHubContext<ScratchHub> hubContext) : ControllerBase
+public class ScratchController(IMediator mediator, IHubContext<ScratchHub> hubContext) : ControllerBase
 {
-    private readonly IScratchService _scratchService = scratchService;
+    private readonly IMediator _mediator = mediator;
     private readonly IHubContext<ScratchHub> _hubContext = hubContext;
 
     [HttpGet]
     public async Task<IActionResult> GetScratchableAreas(CancellationToken cancellationToken = default)
-        => Ok(await _scratchService.GetAllScratchableAreasAsync(cancellationToken));
+        => Ok(await _mediator.Send(new GetAllRecordsQuery(), cancellationToken));
 
     [HttpPost]
-    public async Task<IActionResult> ScratchSquare([FromBody] ScratchRequest scratchRequest, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> ScratchSquare([FromBody] ScratchRecordCommand scratchRecordCommand, CancellationToken cancellationToken = default)
     {
-        var result = await _scratchService.ScratchSquareAsync(scratchRequest.Id, cancellationToken);
+        var result = await _mediator.Send(scratchRecordCommand, cancellationToken);
         await _hubContext.Clients.All.SendAsync("ReceiveScratchUpdate", result.Id, result.Prize);
+
+        await _hubContext.Clients.All.SendAsync("SquareScratched", result.Id, cancellationToken);
         return Ok(result);
     }
 }
