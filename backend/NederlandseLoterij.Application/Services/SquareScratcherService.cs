@@ -20,6 +20,7 @@ public class SquareScratcherService : BackgroundService
     private readonly HubConnection _hubConnection;
     private readonly Random _random = new();
     private static List<ScratchableRecordDto>? _cachedSquares;
+    private readonly int _batchSize = 20;
 
     public SquareScratcherService(IServiceScopeFactory serviceScopeFactory, IHubContext<ScratchHub> hubContext)
     {
@@ -89,14 +90,13 @@ public class SquareScratcherService : BackgroundService
     /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     private async Task ProcessBatch(IMediator mediator, CancellationToken cancellationToken)
     {
-        const int batchSize = 20;
         var availableSquares = await GetCachedAvailableSquaresAsync(mediator, cancellationToken);
 
         if (availableSquares.Any())
         {
             var randomBatch = availableSquares
                 .OrderBy(_ => _random.Next())
-                .Take(batchSize)
+                .Take(_batchSize)
                 .ToList();
 
             var tasks = randomBatch.Select(async square =>

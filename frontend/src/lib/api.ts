@@ -28,8 +28,5 @@ export const scratchSquare = async ({
       userId,
     });
     return response.data;
-  } catch (error) {
-    console.error("Error scratching square:", error);
-    throw error;
-  }
+  } catch {}
 };

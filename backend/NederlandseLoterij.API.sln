@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NederlandseLoterij.Infrastr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NederlandseLoterij.Domain", "NederlandseLoterij.Domain\NederlandseLoterij.Domain.csproj", "{045E01B7-A8BF-4971-859F-9A75187AFDFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NederlandseLoterij.Application.Tests", "NederlandseLoterij.Application.Tests\NederlandseLoterij.Application.Tests.csproj", "{2687E03E-DF78-4917-83EE-3563E61532CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{045E01B7-A8BF-4971-859F-9A75187AFDFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{045E01B7-A8BF-4971-859F-9A75187AFDFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{045E01B7-A8BF-4971-859F-9A75187AFDFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2687E03E-DF78-4917-83EE-3563E61532CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2687E03E-DF78-4917-83EE-3563E61532CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2687E03E-DF78-4917-83EE-3563E61532CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2687E03E-DF78-4917-83EE-3563E61532CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
