@@ -15,6 +15,13 @@ public interface IScratchRepository
     Task<IEnumerable<ScratchableArea>> GetAllAsync(CancellationToken cancellationToken);
 
     /// <summary>
+    /// Gets all scratchable areas asynchronously.
+    /// </summary>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a collection of scratchable areas.</returns>
+    Task<IEnumerable<ScratchableArea>> GetAllScratchableAreas(CancellationToken cancellationToken);
+
+    /// <summary>
     /// Gets a scratchable area by its identifier asynchronously.
     /// </summary>
     /// <param name="id">The identifier of the scratchable area.</param>

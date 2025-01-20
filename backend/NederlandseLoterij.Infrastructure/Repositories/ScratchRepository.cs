@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NederlandseLoterij.Application.Interfaces;
 using NederlandseLoterij.Domain.Entities;
-using System.Threading;
 
 namespace NederlandseLoterij.Infrastructure.Repositories;
 
@@ -13,6 +12,10 @@ public class ScratchRepository(AppDbContext context) : IScratchRepository
     /// <inheritdoc />
     public async Task<IEnumerable<ScratchableArea>> GetAllAsync(CancellationToken cancellationToken)
         => await _context.ScratchableAreas.ToListAsync(cancellationToken);
+
+    /// <inheritdoc />
+    public async Task<IEnumerable<ScratchableArea>> GetAllScratchableAreas(CancellationToken cancellationToken)
+         => await _context.ScratchableAreas.Where(x => x.IsScratched == false).ToListAsync(cancellationToken);
 
     /// <inheritdoc />
     public async Task<ScratchableArea?> GetByIdAsync(int id, CancellationToken cancellationToken)

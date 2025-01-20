@@ -10,8 +10,12 @@ public class ScratchService(IScratchRepository repository) : IScratchService
     private readonly IScratchRepository _repository = repository;
 
     /// <inheritdoc />
-    public async Task<IEnumerable<ScratchableArea>> GetScratchableAreasAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<ScratchableArea>> GetAllScratchableAreasAsync(CancellationToken cancellationToken)
         => await _repository.GetAllAsync(cancellationToken);
+
+    /// <inheritdoc />
+    public async Task<IEnumerable<ScratchableArea>> GetScratchableAreasAsync(CancellationToken cancellationToken)
+        => await _repository.GetAllScratchableAreas(cancellationToken);
 
     /// <inheritdoc />
     public async Task<ScratchableArea> ScratchSquareAsync(int id, CancellationToken cancellationToken)

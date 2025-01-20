@@ -39,9 +39,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         areas.AddRange(
             Enumerable.Range(102, 9899).Select(id => new ScratchableArea
             {
-                Id = id,
-                IsScratched = false,
-                Prize = null
+                Id = id
             })
         );
 

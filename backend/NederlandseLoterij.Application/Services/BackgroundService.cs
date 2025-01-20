@@ -35,7 +35,6 @@ public class BackgroundSquareScratcher(IServiceProvider serviceProvider) : Backg
                         // Notify all clients about the scratched square
                         await hubContext.Clients.All.SendAsync("ReceiveScratchUpdate", result.Id, result.Prize);
 
-                        // Simulate a delay between scratches
                         await Task.Delay(500, cancellationToken);
                     }
                 }

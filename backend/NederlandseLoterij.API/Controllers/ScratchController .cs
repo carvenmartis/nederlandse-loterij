@@ -15,7 +15,7 @@ public class ScratchController(IScratchService scratchService, IHubContext<Scrat
 
     [HttpGet]
     public async Task<IActionResult> GetScratchableAreas(CancellationToken cancellationToken = default)
-        => Ok(await _scratchService.GetScratchableAreasAsync(cancellationToken));
+        => Ok(await _scratchService.GetAllScratchableAreasAsync(cancellationToken));
 
     [HttpPost]
     public async Task<IActionResult> ScratchSquare([FromBody] ScratchRequest scratchRequest, CancellationToken cancellationToken = default)
