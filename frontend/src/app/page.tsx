@@ -13,22 +13,31 @@ const HomePage: React.FC = () => {
   const dispatch = useDispatch();
   const { areas, userId } = useSelector((state: RootState) => state.scratch);
 
+  const refreshAreas = React.useCallback(async () => {
+    try {
+      const data = await getScratchableAreas();
+      dispatch(setAreas(data));
+    } catch (error) {
+      console.error("Error refreshing scratchable areas:", error);
+    }
+  }, [dispatch]);
+
   useEffect(() => {
     const initialize = async () => {
       try {
-        const data = await getScratchableAreas();
-        dispatch(setAreas(data));
+        await refreshAreas();
 
-        const throttledScratchUpdate = throttle(
-          (squareId: number, prize: string) => {
-            dispatch(scratchArea({ id: squareId, prize }));
+        const throttledBatchUpdate = throttle(
+          (updates: { id: number; prize: string }[]) => {
+            updates.forEach((update) => {
+              dispatch(scratchArea(update));
+            });
           },
           200
         );
 
-        startSignalRConnection((squareId, prize) => {
-          throttledScratchUpdate(squareId, prize);
-        });
+        // Start SignalR connection
+        startSignalRConnection(throttledBatchUpdate, refreshAreas);
       } catch (error) {
         console.error("Error initializing data:", error);
       }
@@ -39,12 +48,10 @@ const HomePage: React.FC = () => {
     return () => {
       stopSignalRConnection();
     };
-  }, [dispatch, userId]);
+  }, [dispatch, refreshAreas, userId]);
 
   const handleScratch = async (id: number) => {
     try {
-      console.log("Scratching square", id);
-      console.log("User ID", userId);
       const result = await scratchSquare({ id, userId });
       dispatch(scratchArea({ id: result.id, prize: result.prize }));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,7 +59,7 @@ const HomePage: React.FC = () => {
       if (err.response && err.response.status === 400) {
         alert("You can only scratch one square!");
       } else {
-        alert("An unexpected error occurred.");
+        alert("An unexpected error occurred.s");
       }
     }
   };

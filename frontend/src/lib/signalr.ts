@@ -9,27 +9,53 @@ const SIGNALR_HUB_URL = process.env.NEXT_PUBLIC_API_BASE_URL + "/hub/scratch";
 let connection: HubConnection | null = null;
 
 export const startSignalRConnection = (
-  onScratchUpdate: (squareId: number, prize: string) => void
+  onScratchUpdate: (updates: { id: number; prize: string }[]) => void,
+  refreshAreas: () => Promise<void>
 ) => {
   connection = new HubConnectionBuilder()
-    .withUrl(SIGNALR_HUB_URL) // Ensure this matches the backend endpoint
-    .configureLogging(LogLevel.Information) // Enables detailed logging
-    .withAutomaticReconnect()
+    .withUrl(SIGNALR_HUB_URL)
+    .configureLogging(LogLevel.Information)
+    .withAutomaticReconnect({
+      nextRetryDelayInMilliseconds: (retryContext) =>
+        Math.min(10000, Math.pow(2, retryContext.previousRetryCount) * 1000), // Exponential backoff, max 10s
+    })
     .build();
 
-  // Listen for the "ReceiveScratchUpdate" event
-  connection.on("ReceiveScratchUpdate", (squareId: number, prize: string) => {
-    console.log(
-      `SignalR Event Received: Square ID = ${squareId}, Prize = ${prize}`
-    );
-    onScratchUpdate(squareId, prize); // Call the callback with the received data
+  connection.on(
+    "ReceiveScratchUpdate",
+    (updates: { id: number; prize: string }[]) => {
+      if (Array.isArray(updates)) {
+        onScratchUpdate(updates);
+      } else {
+        console.log("Received non-array data from SignalR:", updates);
+      }
+    }
+  );
+
+  connection.onclose((error) => {
+    console.log("SignalR connection lost.", error);
+    if (error) {
+      console.log("Connection disconnected with error:", error.message);
+    } else {
+      console.warn("Connection disconnected without error.");
+    }
   });
 
-  // Start the connection
+  connection.onreconnecting((error) => {
+    console.warn("SignalR reconnecting...", error);
+  });
+
+  connection.onreconnected(async (connectionId) => {
+    console.log("SignalR reconnected. Connection ID:", connectionId);
+    await refreshAreas();
+  });
+
   connection
     .start()
     .then(() => console.log("SignalR Connected"))
-    .catch((err) => console.error("SignalR Connection Error:", err));
+    .catch((err) => {
+      console.error("SignalR Connection Error:", err.message || err);
+    });
 
   return connection;
 };

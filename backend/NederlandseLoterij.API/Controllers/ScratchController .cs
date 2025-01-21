@@ -22,7 +22,7 @@ public class ScratchController(IMediator mediator, IHubContext<ScratchHub> hubCo
     public async Task<IActionResult> ScratchSquare([FromBody] ScratchRecordCommand scratchRecordCommand, CancellationToken cancellationToken = default)
     {
         var result = await _mediator.Send(scratchRecordCommand, cancellationToken);
-        await _hubContext.Clients.All.SendAsync("ReceiveScratchUpdate", result.Id, result.Prize);
+        await _hubContext.Clients.All.SendAsync("ReceiveScratchUpdate", new object[] { result.Id, result.Prize });
 
         await _hubContext.Clients.All.SendAsync("SquareScratched", result.Id, cancellationToken);
         return Ok(result);

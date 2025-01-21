@@ -20,7 +20,7 @@ public class SquareScratcherService : BackgroundService
     private readonly HubConnection _hubConnection;
     private readonly Random _random = new();
     private static List<ScratchableRecordDto>? _cachedSquares;
-    private readonly int _batchSize = 20;
+    private readonly int _batchSize = 100;
 
     public SquareScratcherService(IServiceScopeFactory serviceScopeFactory, IHubContext<ScratchHub> hubContext)
     {
@@ -94,25 +94,30 @@ public class SquareScratcherService : BackgroundService
 
         if (availableSquares.Any())
         {
+            // Select a random batch of squares
             var randomBatch = availableSquares
                 .OrderBy(_ => _random.Next())
                 .Take(_batchSize)
                 .ToList();
 
-            var tasks = randomBatch.Select(async square =>
+            // Prepare the bulk command
+            var bulkCommand = new ScratchCollectionCommand
             {
-                var result = await mediator.Send(new ScratchRecordCommand
+                Records = randomBatch.Select(square => new ScratchRecordCommand
                 {
-                    UserId = Guid.NewGuid(),
+                    UserId = Guid.NewGuid(), // Replace with the appropriate user ID logic
                     Id = square.Id
-                }, cancellationToken);
+                }).ToList()
+            };
 
-                await _hubContext.Clients.All.SendAsync("ReceiveScratchUpdate", result.Id, result.Prize, cancellationToken);
+            // Send the bulk command
+            var results = await mediator.Send(bulkCommand, cancellationToken);
 
-                _cachedSquares?.Remove(square);
-            });
+            // Remove processed squares from the cache
+            randomBatch.ForEach(square => _cachedSquares?.Remove(square));
 
-            await Task.WhenAll(tasks);
+            // Notify clients via SignalR
+            await _hubContext.Clients.All.SendAsync("ReceiveScratchUpdate", results, cancellationToken);
         }
     }
 
