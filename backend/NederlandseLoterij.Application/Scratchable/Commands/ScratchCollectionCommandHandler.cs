@@ -29,10 +29,6 @@ public class ScratchCollectionCommandHandler(IUserRepository userRepository, ISc
         foreach (var record in request.Records)
         {
             var scratchableArea = await _scratchableAreaRepository.GetRecordByIdAsync(record.Id, cancellationToken);
-            if (scratchableArea == null)
-            {
-                throw new KeyNotFoundException($"Record with ID {record.Id} not found.");
-            }
 
             var user = await _userRepository.GetUserAsync(record.UserId, cancellationToken);
             if (user == null)

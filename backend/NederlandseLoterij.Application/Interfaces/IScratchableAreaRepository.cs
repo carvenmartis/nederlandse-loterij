@@ -24,7 +24,7 @@ public interface IScratchableAreaRepository
     /// </summary>
     /// <param name="recordId">The ID of the record to retrieve.</param>
     /// <returns>The scratchable record DTO if found; otherwise, null.</returns>
-    Task<ScratchableRecordDto?> GetRecordByIdAsync(int recordId, CancellationToken cancellationToken);
+    Task<ScratchableRecordDto> GetRecordByIdAsync(int recordId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Saves changes to the repository.

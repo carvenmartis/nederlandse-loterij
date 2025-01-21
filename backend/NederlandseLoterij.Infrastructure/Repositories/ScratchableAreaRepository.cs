@@ -35,17 +35,17 @@ public class ScratchableAreaRepository(IAppDbContext dbContext) : IScratchableAr
             .ToListAsync(cancellationToken);
 
     /// <inheritdoc />
-    public async Task<ScratchableRecordDto?> GetRecordByIdAsync(int recordId, CancellationToken cancellationToken)
+    public async Task<ScratchableRecordDto> GetRecordByIdAsync(int recordId, CancellationToken cancellationToken)
     {
         var record = await _dbContext.ScratchableAreas.FirstOrDefaultAsync(r => r.Id == recordId, cancellationToken);
-        if (record == null) return null;
-
-        return new ScratchableRecordDto
-        {
-            Id = record.Id,
-            IsScratched = record.IsScratched,
-            Prize = record.Prize
-        };
+        return record == null
+            ? throw new KeyNotFoundException($"Record with ID {recordId} not found.")
+            : new ScratchableRecordDto
+            {
+                Id = record.Id,
+                IsScratched = record.IsScratched,
+                Prize = record.Prize
+            };
     }
 
     /// <inheritdoc />
