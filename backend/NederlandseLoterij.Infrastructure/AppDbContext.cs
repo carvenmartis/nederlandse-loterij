@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NederlandseLoterij.Domain.Entities;
+using NederlandseLoterij.Infrastructure.Entities;
 
 namespace NederlandseLoterij.Infrastructure;
 
@@ -29,13 +29,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         // Seed 10,000 scratchable areas
         var areas = new List<ScratchableArea>
         {
-            new() { Id = 1, Prize = "€25,000" }
+            new() { Id = Guid.NewGuid(), Prize = "€25,000" }
         };
 
         areas.AddRange(
             Enumerable.Range(2, 100).Select(id => new ScratchableArea
             {
-                Id = id,
+                Id = Guid.NewGuid(),
                 Prize = "Consolation Prize"
             })
         );
@@ -43,14 +43,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         areas.AddRange(
             Enumerable.Range(102, 9899).Select(id => new ScratchableArea
             {
-                Id = id
+                Id = Guid.NewGuid()
             })
         );
 
-        var shuffledAreas = areas.OrderBy(_ => System.Guid.NewGuid()).ToList();
+        var shuffledAreas = areas.OrderBy(_ => Guid.NewGuid()).ToList();
+
         for (int i = 0; i < shuffledAreas.Count; i++)
         {
-            shuffledAreas[i].Id = i + 1;
+            shuffledAreas[i].Index = i + 1;
         }
 
         modelBuilder.Entity<ScratchableArea>().HasData(shuffledAreas);

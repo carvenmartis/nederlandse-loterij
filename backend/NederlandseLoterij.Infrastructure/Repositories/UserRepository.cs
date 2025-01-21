@@ -1,14 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NederlandseLoterij.Application.Interfaces;
 using NederlandseLoterij.Application.Scratchable.Dtos;
-using NederlandseLoterij.Domain.Entities;
+using NederlandseLoterij.Infrastructure.Entities;
 
 namespace NederlandseLoterij.Infrastructure.Repositories;
 
-public class UserRepository(IAppDbContext dbContext) : IUserRepository
+/// <inheritdoc />
+public class UserRepository(IAppDbContext dbContext) : Repository<User>(dbContext), IUserRepository
 {
     private readonly IAppDbContext _dbContext = dbContext;
 
+    /// <inheritdoc />
     public async Task<UserDto?> GetUserAsync(Guid userId, CancellationToken cancellationToken)
     {
         var existingUser = await _dbContext.Users
@@ -18,7 +20,7 @@ public class UserRepository(IAppDbContext dbContext) : IUserRepository
         if (existingUser == null)
             return null;
 
-        return new UserDto()
+        return new UserDto
         {
             Id = existingUser.Id,
             HasScratched = existingUser.HasScratched,
@@ -31,23 +33,26 @@ public class UserRepository(IAppDbContext dbContext) : IUserRepository
         };
     }
 
-    public async Task AddUserAsync(UserDto userDto)
+    /// <inheritdoc />
+    public async Task AddUserAsync(UserDto userDto, CancellationToken cancellationToken)
     {
-        var user = await _dbContext.Users.FindAsync(userDto.Id);
+        var user = await GetByIdAsync(userDto.Id, cancellationToken);
         if (user == null)
         {
             user = new User
             {
                 Id = userDto.Id,
             };
-            await _dbContext.Users.AddAsync(user);
+
+            await AddAsync(user);
         }
 
         user.HasScratched = userDto.HasScratched;
     }
 
-    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+    /// <inheritdoc />
+    public new async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await base.SaveChangesAsync(cancellationToken);
     }
 }

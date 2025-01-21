@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NederlandseLoterij.Domain.Entities;
+using NederlandseLoterij.Infrastructure.Entities;
 
 namespace NederlandseLoterij.Infrastructure.Configurations;
 

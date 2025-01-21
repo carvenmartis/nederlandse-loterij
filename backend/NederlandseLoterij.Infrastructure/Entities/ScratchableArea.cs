@@ -1,4 +1,4 @@
-﻿namespace NederlandseLoterij.Domain.Entities;
+﻿namespace NederlandseLoterij.Infrastructure.Entities;
 
 /// <summary>
 /// Represents a scratchable area in a lottery ticket.
@@ -8,7 +8,9 @@ public class ScratchableArea
     /// <summary>
     /// Gets or sets the unique identifier for the scratchable area.
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
+
+    public int Index { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the area has been scratched.

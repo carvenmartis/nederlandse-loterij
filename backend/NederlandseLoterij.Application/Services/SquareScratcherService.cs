@@ -34,7 +34,7 @@ public class SquareScratcherService : BackgroundService
             .Build();
 
         // Register the listener for "SquareScratched" events
-        _hubConnection.On<int>("SquareScratched", scratchedSquareId =>
+        _hubConnection.On<Guid>("SquareScratched", scratchedSquareId =>
         {
             // Remove the scratched square from the cache
             _cachedSquares?.RemoveAll(square => square.Id == scratchedSquareId);

@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NederlandseLoterij.Domain.Entities;
+using NederlandseLoterij.Infrastructure.Entities;
 
 namespace NederlandseLoterij.Infrastructure;
 
 public interface IAppDbContext
 {
+    DbSet<T> Set<T>() where T : class;
+
     /// <summary>
     /// Gets or sets the DbSet for ScratchableArea entities.
     /// </summary>

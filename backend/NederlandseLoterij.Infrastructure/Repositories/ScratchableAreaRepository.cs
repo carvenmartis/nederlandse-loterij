@@ -1,56 +1,60 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NederlandseLoterij.Application.Interfaces;
+﻿using NederlandseLoterij.Application.Interfaces;
 using NederlandseLoterij.Application.Scratchable.Dtos;
-using NederlandseLoterij.Domain.Entities;
+using NederlandseLoterij.Infrastructure.Entities;
 
 namespace NederlandseLoterij.Infrastructure.Repositories;
 
 /// <inheritdoc />
-public class ScratchableAreaRepository(IAppDbContext dbContext) : IScratchableAreaRepository
+public class ScratchableAreaRepository(IAppDbContext dbContext)
+    : Repository<ScratchableArea>(dbContext), IScratchableAreaRepository
 {
     private readonly IAppDbContext _dbContext = dbContext;
 
     /// <inheritdoc />
-    public async Task<List<ScratchableRecordDto>> GetAllRecordsAsync(CancellationToken cancellationToken)
-      => await _dbContext.ScratchableAreas
-            .Select(r => new ScratchableRecordDto
-            {
-                Id = r.Id,
-                IsScratched = r.IsScratched,
-                Prize = r.Prize
-            })
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
-
-    /// <inheritdoc />
-    public async Task<List<ScratchableRecordDto>> GetScratchableRecordsAsync(CancellationToken cancellationToken)
-        => await _dbContext.ScratchableAreas
-            .Where(r => !r.IsScratched)
-            .Select(r => new ScratchableRecordDto
-            {
-                Id = r.Id,
-                IsScratched = r.IsScratched,
-                Prize = r.Prize
-            })
-            .ToListAsync(cancellationToken);
-
-    /// <inheritdoc />
-    public async Task<ScratchableRecordDto> GetRecordByIdAsync(int recordId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<ScratchableRecordDto>> GetAllRecordsAsync(CancellationToken cancellationToken)
     {
-        var record = await _dbContext.ScratchableAreas.FirstOrDefaultAsync(r => r.Id == recordId, cancellationToken);
-        return record == null
-            ? throw new KeyNotFoundException($"Record with ID {recordId} not found.")
-            : new ScratchableRecordDto
-            {
-                Id = record.Id,
-                IsScratched = record.IsScratched,
-                Prize = record.Prize
-            };
+        var records = await GetAllAsync(cancellationToken);
+
+        return records.Select(r => new ScratchableRecordDto
+        {
+            Id = r.Id,
+            IsScratched = r.IsScratched,
+            Prize = r.Prize
+        });
     }
 
     /// <inheritdoc />
-    public async Task SaveChangesAsync(CancellationToken cancellationToken)
-       => await _dbContext.SaveChangesAsync(cancellationToken);
+    public async Task<IEnumerable<ScratchableRecordDto>> GetScratchableRecordsAsync(CancellationToken cancellationToken)
+    {
+        var records = await FindAsync(r => !r.IsScratched, cancellationToken);
+
+        return records
+            .Select(r => new ScratchableRecordDto
+            {
+                Id = r.Id,
+                IsScratched = r.IsScratched,
+                Prize = r.Prize
+            });
+    }
+
+    /// <inheritdoc />
+    public async Task<ScratchableRecordDto> GetRecordByIdAsync(Guid recordId, CancellationToken cancellationToken)
+    {
+        var record = await GetByIdAsync(recordId, cancellationToken);
+        if (record == null)
+            throw new KeyNotFoundException($"Record with ID {recordId} not found.");
+
+        return new ScratchableRecordDto
+        {
+            Id = record.Id,
+            IsScratched = record.IsScratched,
+            Prize = record.Prize
+        };
+    }
+
+    /// <inheritdoc />
+    public new async Task SaveChangesAsync(CancellationToken cancellationToken)
+       => await base.SaveChangesAsync(cancellationToken);
 
     /// <inheritdoc />
     public async Task AddScratchableAreaAsync(ScratchableRecordDto scratchableRecordDto, CancellationToken cancellationToken)

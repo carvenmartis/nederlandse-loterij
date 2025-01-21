@@ -1,4 +1,4 @@
-﻿namespace NederlandseLoterij.Domain.Entities;
+﻿namespace NederlandseLoterij.Infrastructure.Entities;
 
 /// <summary>
 /// Represents a user in the Nederlandse Loterij system.
@@ -18,5 +18,5 @@ public class User
     /// <summary>
     /// Gets or sets the scratchable area associated with the user.
     /// </summary>
-    public ScratchableArea ScratchableArea { get; set; }
+    public ScratchableArea? ScratchableArea { get; set; }
 }

@@ -19,7 +19,9 @@ public class ScratchRecordCommandValidator : AbstractValidator<ScratchRecordComm
             .WithMessage("UserId cannot be an empty GUID.");
 
         RuleFor(x => x.Id)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("Id must be greater than or equal to 0.");
+            .NotEmpty()
+            .WithMessage("UserId is required.")
+            .NotEqual(Guid.Empty)
+            .WithMessage("UserId cannot be an empty GUID.");
     }
 }

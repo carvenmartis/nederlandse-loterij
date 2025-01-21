@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { persistor, RootState } from "../store";
+import { RootState } from "../store";
 import { resetState } from "../store/scratchSlice";
 
 const NavBar: React.FC = () => {
@@ -10,7 +10,7 @@ const NavBar: React.FC = () => {
   const handleReset = async () => {
     dispatch(resetState());
 
-    await persistor.purge();
+    // await persistor.purge();
 
     alert("State has been reset!");
   };

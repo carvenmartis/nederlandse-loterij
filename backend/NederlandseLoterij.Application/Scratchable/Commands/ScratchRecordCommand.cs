@@ -16,5 +16,5 @@ public class ScratchRecordCommand : IRequest<ScratchableRecordDto>
     /// <summary>
     /// Gets or sets the unique identifier for the scratchable item.
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

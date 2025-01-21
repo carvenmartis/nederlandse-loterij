@@ -36,7 +36,7 @@ public class ScratchRecordCommandHandler(IUserRepository userRepository, IScratc
         if (user == null)
         {
             user = new UserDto { Id = request.UserId, HasScratched = true };
-            await _userRepository.AddUserAsync(user);
+            await _userRepository.AddUserAsync(user, cancellationToken);
             await _userRepository.SaveChangesAsync(cancellationToken);
         }
         else if (user.HasScratched)
@@ -45,7 +45,7 @@ public class ScratchRecordCommandHandler(IUserRepository userRepository, IScratc
         }
 
         user.HasScratched = true;
-        await _userRepository.AddUserAsync(user);
+        await _userRepository.AddUserAsync(user, cancellationToken);
         await _userRepository.SaveChangesAsync(cancellationToken);
 
         scratchableArea.IsScratched = true;
